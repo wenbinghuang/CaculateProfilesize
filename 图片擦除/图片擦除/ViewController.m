@@ -17,10 +17,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    UIImageView *imagview = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"B"]];
+    UIImageView *imagview = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"2B"]];
     [self.view addSubview:imagview];
     
-    UIImageView *imageView1 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"A"]];
+    UIImageView *imageView1 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"2A"]];
     [self.view addSubview:imageView1];
     self.imageView = imageView1;
     UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
@@ -30,18 +30,19 @@
 - (void)pan:(UIPanGestureRecognizer*)pan
 {
     CGPoint currentPoint = [pan locationInView:self.view];
-    float wh = 30;
+    float wh = 5;
     float x = currentPoint.x - wh * 0.5;
     float y = currentPoint.y - wh * 0.5;
-    
-    CGRect eraseRect = CGRectMake(x, y - wh * 0.5, wh, wh);
+    CGRect eraseRect = CGRectMake(x, y, wh, wh);
     UIGraphicsBeginImageContextWithOptions(self.view.frame.size, NO,0);
     
     CGContextRef ctx = UIGraphicsGetCurrentContext();
     
 //    [_imageView.layer renderInContext:ctx];
+   
     
     [_imageView.image drawInRect:self.view.frame];
+
     CGContextClearRect(ctx, eraseRect);
     
     

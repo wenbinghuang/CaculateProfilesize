@@ -23,13 +23,14 @@
     NSString *const kMONITORNOTIFICATION = @"MONITORNOTIFICATION";
 
 @interface AppDelegate ()
-
+@property(nonatomic,strong)NSTimer *timer;
 @end
 
 @implementation AppDelegate
 
 
 + (NSDictionary *)getTrafficMonitorings {
+
     BOOL success = false;
     struct ifaddrs *addrs;
     const struct ifaddrs *cursor;
@@ -48,7 +49,7 @@
             name = [NSString stringWithFormat:@"%s",cursor->ifa_name];
             
             if (cursor->ifa_addr->sa_family == AF_LINK) {
-                
+                NSLog(@"%@",name);
                 //WIFI消耗的流量
                 if ([name hasPrefix:@"en"])
                 {
@@ -120,9 +121,10 @@
     static dispatch_once_t  predicate;
     dispatch_once(&predicate, ^{
         NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(getInternetface) userInfo:nil repeats:YES];
+        self.timer = timer;
         [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
-        
     });
+    
     return YES;
 }
 
@@ -132,12 +134,12 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
    
-    __block UIBackgroundTaskIdentifier bgTask;
-    bgTask = [application beginBackgroundTaskWithExpirationHandler:^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            bgTask = UIBackgroundTaskInvalid;
-        });
-    }];
+//    __block UIBackgroundTaskIdentifier bgTask;
+//    bgTask = [application beginBackgroundTaskWithExpirationHandler:^{
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            bgTask = UIBackgroundTaskInvalid;
+//        });
+//    }];
     
    
     
@@ -149,6 +151,7 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -189,6 +192,7 @@
         }
     }
     freeifaddrs(ifa_list);
+    
     return iBytes + oBytes;
 }
 
